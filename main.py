@@ -74,7 +74,7 @@ graph_builder.add_edge("emotional",END)
 graph_builder.add_edge("logical",END)
 
 
-graph_builder.compile()
+graph = graph_builder.compile()
 
 def run_workflow():
     initial_state = {"messages":[],"message_class":None}
@@ -82,5 +82,16 @@ def run_workflow():
     while True:
 
         user_input = input("Enter your problem here: ")
-        
+        if user_input == "exit":
+            print("Exiting System")
+            break
 
+        initial_state["messages"] = initial_state.get("messages",[]) + [{"role":"user","content":user_input}]
+
+        initial_state = graph.invoke(initial_state)
+
+        if initial_state.get("messages") and len(initial_state.get("messages")) > 0:
+            print(f"Assistant : {initial_state["messages"][-1].content}")
+
+if __name__ == "__main__":
+    run_workflow()
